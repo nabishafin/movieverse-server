@@ -105,6 +105,29 @@ async function run() {
             }
         });
 
+        // Remove a movie from favorites
+        app.delete("/removeFromFavorites/:id", async (req, res) => {
+            const movieId = req.params.id;
+            const query = { _id: new ObjectId(movieId) };
+
+            try {
+                // Update the movie's 'isFavorite' field to false
+                const updateResult = await moviesDB.updateOne(query, {
+                    $set: { isFavorite: false }
+                });
+
+                if (updateResult.modifiedCount === 0) {
+                    return res.status(404).send({ message: "Movie not found or not a favorite" });
+                }
+
+                res.send({ message: "Movie removed from favorites!" });
+            } catch (err) {
+                console.error("Error removing from favorites:", err);
+                res.status(500).send({ message: "Failed to remove from favorites" });
+            }
+        });
+
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
