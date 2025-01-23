@@ -37,8 +37,18 @@ async function run() {
             }
         });
 
+        // get all movies
+        app.get('/allmvies', async (req, res) => {
+            const result = await moviesDB.find().toArray();
+            res.send(result)
+        })
 
-
+        // post movie
+        app.post('/addmovies', async (req, res) => {
+            const menu = req.body;
+            const result = await moviesDB.insertOne(menu);  // Insert movie details into the database
+            res.send(result);  // Send a response with the result of the insert operation
+        });
 
 
         // Send a ping to confirm a successful connection
